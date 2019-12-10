@@ -12,6 +12,10 @@ Requires Visual Studio 2019 (Community Edition is fine)
 2) Extract or clone this repository into the f4se folder of the source. You can safely leave or delete f4se_loader, f4se_steam_loader, f4se_loader_common, and the f4se64 solution. You may also leave them if you wish.
 3) Load and build the solution :)
 
+## Pre-Built Binaries
+
+You can find a pre-built binary from the Nexus download page at https://www.nexusmods.com/fallout4/mods/42497
+
 ## Credits
 
 Jonathan Ostrus - original concept and main developer
