@@ -18,5 +18,6 @@ Requires Visual Studio 2019 (Community Edition is fine)
 Jonathan Ostrus - original concept and main developer
 
 Eckserah - putting up with me
+
 Nukem - memory search/patch function code
 
