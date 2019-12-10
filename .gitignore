@@ -1,0 +1,55 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# VS generated files
+*.log
+*.tlog
+*.pdb
+*.ipdb
+*.pch
+*.ipch
+*.user
+*.db
+x64
+
+# vs folder
+.vs
+
+# folders from skse source
+f4se
+f4se_common
+f4se_loader
+f4se_loader_common
+f4se_steam_loader
+
+xbyak
