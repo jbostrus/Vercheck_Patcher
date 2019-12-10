@@ -2,8 +2,7 @@
 
 This source will build an F4SE plugin DLL that when used will patch the plugin header version check. The game EXE will check the version header and if it is too high it skips loading the plugin. This comes with a risk if you are using a game EXE that does not actually know how to handle the plugin odd things may happen.
 
-This was originally developed because Bethesda changed the version header in the November 2019 patch. This prevented using old game EXEs 
-
+This was originally developed because Bethesda changed the version header in the November 2019 patch. This prevented using old game EXEs while waiting on other desired F4SE plugins to be updated.
 
 ## Build Instructions
 
