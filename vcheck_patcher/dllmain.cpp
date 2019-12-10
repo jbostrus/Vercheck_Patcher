@@ -32,16 +32,17 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 }
 
 extern "C" {
-	bool F4SEPlugin_Query(const F4SEInterface* f4se, PluginInfo* info) {
+	bool F4SEPlugin_Query(const F4SEInterface* f4se, PluginInfo* info)
+	{
 		// populate info structure
 		info->infoVersion = PluginInfo::kInfoVersion;
 		info->name = pluginName;
 		info->version = pluginVersion;
 
-		if (f4se->runtimeVersion != RUNTIME_VERSION_1_10_138) {
+		if (!(f4se->runtimeVersion <= RUNTIME_VERSION_1_10_138)) {
 			UInt32 runtimeVersion = RUNTIME_VERSION_1_10_138;
 			char buf[512];
-			sprintf_s(buf, "vcheck patcher\nExpected Version: %d.%d.%d.%d\nFound Version: %d.%d.%d.%d",
+			sprintf_s(buf, "vcheck patcher\nExpected Version earlier than: %d.%d.%d.%d\nFound Version: %d.%d.%d.%d",
 				GET_EXE_VERSION_MAJOR(runtimeVersion),
 				GET_EXE_VERSION_MINOR(runtimeVersion),
 				GET_EXE_VERSION_BUILD(runtimeVersion),
@@ -67,7 +68,8 @@ extern "C" {
 		return true;
 	}
 
-	bool F4SEPlugin_Load(const F4SEInterface* f4se) {
+	bool F4SEPlugin_Load(const F4SEInterface* f4se)
+	{
 		_MESSAGE("%s loading...", pluginName);
 		PatchMemory();
 		_MESSAGE("%s load successful.", pluginName);
