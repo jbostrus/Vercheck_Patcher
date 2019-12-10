@@ -12,41 +12,50 @@ Patterns PatternCheckerLocation =
 	4	// offset to patch at
 };
 
-Patterns PatternNewpatchLocation =
-{	// 48 8B F9 0F 2E 35 ? ? ? ? 
-	"\x48\x8B\xF9\x0F\x2E\x35\x00\x00\x00\x00\x0F\x84\x00\x00\x00\x00\x48\x83\xB9\x00\x00\x00\x00\x00\x0F\x85\x00\x00\x00\x00\x83\x3D\x00\x00\x00\x00\x00",
-	"xxxxxx????xx????xxx?????xx????xx?????",
-	6
+// this pattern finds a known constant for a 1024.0 float
+Patterns PatternNewValueSearchLocation =
+{
+	"\xF3\x0F\x10\x0D\x00\x00\x00\x00\xF3\x0F\x59\x0D\x00\x00\x00\x00\xF3\x0F\x59\x0D\x00\x00\x00\x00\xF3\x48\x0F\x2C\xC1\x89\x81\x00\x00\x00\x00\x48\x8B\x49\x50\x8B\xD0\xE8\x00\x00\x00\x00",
+	"xxxx????xxxx????xxxx????xxxxxxx????xxxxxxx????",
+	12
 };
 
-bool PatchMemory()
+bool TryToPatchMemory()
 {
 	MODULEINFO moduleInfo;
 	GetModuleInformation(GetCurrentProcess(), GetModuleHandle(nullptr), &moduleInfo, sizeof(moduleInfo));
 	
-	uintptr_t addrToPatch = FindPattern((uintptr_t)moduleInfo.lpBaseOfDll, moduleInfo.SizeOfImage, (uint8_t*)PatternCheckerLocation.BytesToFind, PatternCheckerLocation.FindMask);
-	if (!addrToPatch)
+	// Address pointer to patch new constant location to
+	uintptr_t ptrAbsAddressToPatch;
+	// Address pointer where we get the child location for our new contant
+	uintptr_t ptrAbsAddressNewValuePointerSearch;
+	// Address offset of new constant relative to patch address
+	uint32_t offNewConstRelToPatchAddress;
+	// Absolute pointer address to our desired constant
+	uintptr_t ptrAbsAddressNewConstant;
+
+	ptrAbsAddressToPatch = FindPattern((uintptr_t)moduleInfo.lpBaseOfDll, moduleInfo.SizeOfImage, (uint8_t*)PatternCheckerLocation.BytesToFind, PatternCheckerLocation.FindMask);
+	if (!ptrAbsAddressToPatch)
 	{
 		MessageBox(NULL, "Unable to find new original check pointer.", "Fatal Error", MB_OK | MB_ICONERROR);
-		// TODO: fatal error couldn't find patch location.
 		return false;
 	}
-	addrToPatch += PatternCheckerLocation.AddressModifier;
+	ptrAbsAddressToPatch += PatternCheckerLocation.AddressModifier;
 
-	uintptr_t addrNewValuePointer = FindPattern((uintptr_t)moduleInfo.lpBaseOfDll, moduleInfo.SizeOfImage, (uint8_t*)PatternNewpatchLocation.BytesToFind, PatternNewpatchLocation.FindMask);
-	if (!addrNewValuePointer)
+	ptrAbsAddressNewValuePointerSearch = FindPattern((uintptr_t)moduleInfo.lpBaseOfDll, moduleInfo.SizeOfImage, (uint8_t*)PatternNewValueSearchLocation.BytesToFind, PatternNewValueSearchLocation.FindMask);
+	if (!ptrAbsAddressNewValuePointerSearch)
 	{
 		MessageBox(NULL, "Unable to find new value pointer.", "Fatal Error", MB_OK | MB_ICONERROR);
-		// TODO: fatal error
 		return false;
 	}
 	
-	addrNewValuePointer += PatternNewpatchLocation.AddressModifier;	// actual address of the memory offset we want
+	ptrAbsAddressNewValuePointerSearch += PatternNewValueSearchLocation.AddressModifier;
 	
-	uint32_t addrOffsetVal = *(uint32_t*)addrNewValuePointer;	// temp set to relative offset of pattern match
-	uintptr_t addrAbsOffset = addrNewValuePointer + addrOffsetVal + sizeof(addrOffsetVal);
+	// temp helper to calculate relative offset from pattern match address
+	uint32_t offNewConstRelToNewSearchAddr = *(uint32_t*)ptrAbsAddressNewValuePointerSearch;
+	ptrAbsAddressNewConstant = ptrAbsAddressNewValuePointerSearch + offNewConstRelToNewSearchAddr + sizeof(offNewConstRelToNewSearchAddr);
 
-	uintptr_t addrPatchRelOffset = addrAbsOffset - addrToPatch - sizeof(addrOffsetVal);
+	offNewConstRelToPatchAddress = (uint32_t)(ptrAbsAddressNewConstant - ptrAbsAddressToPatch - sizeof(offNewConstRelToNewSearchAddr));
 
 #ifdef _DEBUG
 	/**
@@ -56,29 +65,27 @@ bool PatchMemory()
 
 	**/
 	sizeof(float);
-	float fVal = *(float*)addrAbsOffset;
-	fVal = fVal * 1000;
+	float fVal = *(float*)ptrAbsAddressNewConstant;
 	char buf[2048];
-	uintptr_t addrRelOffset = addrAbsOffset - (uintptr_t)moduleInfo.lpBaseOfDll;
-	sprintf_s(buf, "Found game base address at: %X\n" 
-		"Relative offset to patch: %X\n" 
-		"Relative offset to get new value from: %X\n" 
-		"Offset of real new value from new pointer: %X\n" 
-		"New value at: %X\n"
-		"Value of: %d\n"
-		"Patch offset val: %X",
-		(unsigned int)moduleInfo.lpBaseOfDll,
-		(unsigned int)(addrToPatch - (uintptr_t)moduleInfo.lpBaseOfDll),
-		(unsigned int)(addrNewValuePointer - (uintptr_t)moduleInfo.lpBaseOfDll),
-		(unsigned int)addrOffsetVal,
-		(unsigned int)addrRelOffset,
-		(unsigned int)fVal,
-		(unsigned int)addrPatchRelOffset
+	sprintf_s(buf, "Found game base address at: %I64X\n" 
+		"Relative offset to patch location: %I64X\n" 
+		"Relative offset to grab new constant pointer from: %I64X\n" 
+		"Offset from new pointer to new const: %I64X\n" 
+		"Offset from base to new value const at: %I64X\n"
+		"Float value of new const: %d.%04d\n"
+		"Offset value to patch in: %I64X",
+		(int64_t)moduleInfo.lpBaseOfDll,
+		(int64_t)(ptrAbsAddressToPatch - (uintptr_t)moduleInfo.lpBaseOfDll),
+		(int64_t)(ptrAbsAddressNewValuePointerSearch - (uintptr_t)moduleInfo.lpBaseOfDll),
+		(int64_t)offNewConstRelToNewSearchAddr,
+		(int64_t)ptrAbsAddressNewConstant - (uintptr_t)moduleInfo.lpBaseOfDll,
+		(unsigned int)fVal, (unsigned int)((fVal - fVal)*1024),
+		(int64_t)offNewConstRelToPatchAddress
 	);
-	MessageBox(NULL, buf, "TEST", MB_OK | MB_ICONEXCLAMATION);
+	MessageBox(NULL, buf, "DEBUG vcheck", MB_OK | MB_ICONEXCLAMATION);
 #endif
 
-	PatchMemory(addrToPatch, reinterpret_cast<uint8_t*>(&addrPatchRelOffset), 4);
+	PatchMemory(ptrAbsAddressToPatch, reinterpret_cast<uint8_t*>(&offNewConstRelToPatchAddress), 4);
 
 	return true;
 }

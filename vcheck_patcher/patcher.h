@@ -7,6 +7,6 @@ struct Patterns
 	int AddressModifier;
 };
 
-bool PatchMemory();
+bool TryToPatchMemory();
 void PatchMemory(uintptr_t Address, uint8_t* Data, size_t Size);
 uintptr_t FindPattern(uintptr_t StartAddress, uintptr_t MaxSize, const uint8_t* Bytes, const char* Mask);
