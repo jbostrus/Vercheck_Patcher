@@ -64,7 +64,6 @@ bool TryToPatchMemory()
 	finding the correct locations from the patterns.
 
 	**/
-	sizeof(float);
 	float fVal = *(float*)ptrAbsAddressNewConstant;
 	char buf[2048];
 	sprintf_s(buf, "Found game base address at: %I64X\n" 
