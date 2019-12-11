@@ -9,7 +9,7 @@ This was originally developed because Bethesda changed the version header in the
 Requires Visual Studio 2019 (Community Edition is fine)
 
 1) Download the clean f4se source from [f4se's website](http://f4se.silverlock.org/)
-2) Extract or clone this repository into the f4se folder of the source. You can safely leave or delete f4se_loader, f4se_steam_loader, f4se_loader_common, and the f4se64 solution. You may also leave them if you wish.
+2) Extract or clone this repository into the f4se folder of the source. You can safely leave or delete f4se_loader, f4se_steam_loader, f4se_loader_common, and the f4se64 solution.
 3) Load and build the solution :)
 
 ## Pre-Built Binaries
