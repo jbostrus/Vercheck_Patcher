@@ -23,11 +23,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="xutil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="patcher.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
