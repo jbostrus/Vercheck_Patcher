@@ -2,11 +2,15 @@
 #include "f4se/PluginAPI.h"
 #include "f4se_common/f4se_version.h"
 #include "patcher.h"
+#include <string>
+#include <shlobj.h>
 
 #define VERSION_TO_STRING(a) std::to_string(GET_EXE_VERSION_MAJOR(a)) + "." + std::to_string(GET_EXE_VERSION_MINOR(a)) + "." + std::to_string(GET_EXE_VERSION_BUILD(a)) + (GET_EXE_VERSION_SUB(a) > 0? "." + GET_EXE_VERSION_SUB(a): "");
 
+IDebugLog gLog;
+
 const char pluginName[] = { "VcheckPatcher" };
-const UInt32 pluginVersion = MAKE_EXE_VERSION_EX(1, 0, 0, 0);
+const UInt32 pluginVersion = MAKE_EXE_VERSION_EX(2, 0, 0, 0);
 const std::string pluginVersionString = VERSION_TO_STRING(pluginVersion);
 
 BOOL APIENTRY DllMain(HMODULE hModule,
@@ -20,6 +24,12 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 extern "C" {
 	bool F4SEPlugin_Query(const F4SEInterface* f4se, PluginInfo* info)
 	{
+		std::string logPath = "\\My Games\\Fallout4\\F4SE\\";
+		logPath += pluginName;
+		logPath += ".log";
+
+		gLog.OpenRelative(CSIDL_MYDOCUMENTS, logPath.c_str());
+
 		// populate info structure
 		info->infoVersion = PluginInfo::kInfoVersion;
 		info->name = pluginName;

@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\reg2k">
+      <UniqueIdentifier>{bd9e7e76-e151-4e7c-bb10-23df66fad4e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\reg2k">
+      <UniqueIdentifier>{e501c0c1-4927-404f-ad43-0e0a7094fd1e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="patcher.cpp">
@@ -21,10 +27,25 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\reg2k\rva\sscan\Pattern.cpp">
+      <Filter>Source Files\reg2k</Filter>
+    </ClCompile>
+    <ClCompile Include="..\reg2k\Utils.cpp">
+      <Filter>Source Files\reg2k</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="patcher.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\reg2k\rva\RVA.h">
+      <Filter>Header Files\reg2k</Filter>
+    </ClInclude>
+    <ClInclude Include="..\reg2k\Utils.h">
+      <Filter>Header Files\reg2k</Filter>
+    </ClInclude>
+    <ClInclude Include="..\reg2k\rva\sscan\Pattern.h">
+      <Filter>Header Files\reg2k</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
