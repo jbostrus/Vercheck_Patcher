@@ -1,4 +1,5 @@
 #include "patcher.h"
+#include "config.h"
 #include <vector>
 #include <algorithm>
 #ifdef _DEBUG
@@ -35,7 +36,6 @@ bool TryToPatchMemory()
 	}
 	ptrAbsAddressToPatch = PatternCheckerLocation.GetUIntPtr();
 
-
 	if (!PatternNewValueSearchLocation.IsResolved())
 	{
 		MessageBox(NULL, "Unable to find new value to patch in.", "Fatal Error", MB_OK | MB_ICONERROR);
@@ -55,6 +55,9 @@ bool TryToPatchMemory()
 
 	**/
 	MODULEINFO moduleInfo;
+	std::string DebugTitle = "DEBUG ";
+	DebugTitle += PLUGIN_NAME_LONG;
+	DebugTitle += 
 	GetModuleInformation(GetCurrentProcess(), GetModuleHandle(nullptr), &moduleInfo, sizeof(moduleInfo));
 
 	float fVal;
@@ -75,7 +78,7 @@ bool TryToPatchMemory()
 		(int64_t)offNewConstRelToPatchAddress
 	);
 	_MESSAGE(buf);
-	MessageBox(NULL, buf, "DEBUG vcheck", MB_OK | MB_ICONEXCLAMATION);
+	MessageBox(NULL, buf, DebugTitle.c_str(), MB_OK | MB_ICONEXCLAMATION);
 #endif
 
 	Utils::WriteMemory(ptrAbsAddressToPatch, &offNewConstRelToPatchAddress, sizeof(offNewConstRelToPatchAddress));

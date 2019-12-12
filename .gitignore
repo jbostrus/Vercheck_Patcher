@@ -40,6 +40,7 @@
 *.ipch
 *.user
 *.db
+*.aps
 x64
 
 # vs folder
