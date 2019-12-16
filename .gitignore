@@ -47,6 +47,7 @@ x64
 .vs
 
 # folders from skse source
+common
 f4se
 f4se_common
 f4se_loader
@@ -59,8 +60,3 @@ skse64_loader_common
 skse64_steam_loader
 
 xbyak
-/f4se.sln
-/f4se_readme.txt
-/f4se_whatsnew.txt
-/skse64.sln
-/skse64_license.txt

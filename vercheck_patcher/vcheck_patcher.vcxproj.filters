@@ -27,37 +27,37 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\reg2k\rva\sscan\Pattern.cpp">
-      <Filter>Source Files\reg2k</Filter>
-    </ClCompile>
-    <ClCompile Include="..\reg2k\Utils.cpp">
-      <Filter>Source Files\reg2k</Filter>
-    </ClCompile>
     <ClCompile Include="dxgi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="logging.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="rva\sscan\Pattern.cpp">
+      <Filter>Source Files\reg2k</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files\reg2k</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="patcher.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\reg2k\rva\RVA.h">
-      <Filter>Header Files\reg2k</Filter>
-    </ClInclude>
-    <ClInclude Include="..\reg2k\Utils.h">
-      <Filter>Header Files\reg2k</Filter>
-    </ClInclude>
-    <ClInclude Include="..\reg2k\rva\sscan\Pattern.h">
-      <Filter>Header Files\reg2k</Filter>
     </ClInclude>
     <ClInclude Include="config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="logging.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rva\sscan\Pattern.h">
+      <Filter>Header Files\reg2k</Filter>
+    </ClInclude>
+    <ClInclude Include="rva\RVA.h">
+      <Filter>Header Files\reg2k</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files\reg2k</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
