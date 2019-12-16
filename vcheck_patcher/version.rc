@@ -17,7 +17,7 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "FileDescription", "Disable Fallout 4 header version checks"
+            VALUE "FileDescription", "Disable plugin header version checks"
 			VALUE "FileVersion", PLUGIN_VERSION_VERSTRING
             VALUE "InternalName", PLUGIN_NAME_LONG
             VALUE "LegalCopyright", "Copyright (C) 2019"

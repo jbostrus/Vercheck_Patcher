@@ -14,4 +14,9 @@
 #define PLUGIN_LOGFILE_NAME				"VcheckPatcher.log"
 #define PLUGIN_PRODUCT_NAME				"Version Check Patcher"
 
+#define LOG_FOLDER1 "\\logs"
+#define LOG_FOLDER2 "\\2"
+
+#define LOG_DEST LOG_FOLDER1 LOG_FOLDER2
+
 #endif /* __VCHECK_CONFIG_H__ */

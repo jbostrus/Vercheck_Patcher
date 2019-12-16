@@ -52,5 +52,15 @@ f4se_common
 f4se_loader
 f4se_loader_common
 f4se_steam_loader
+skse64
+skse64_common
+skse64_loader
+skse64_loader_common
+skse64_steam_loader
 
 xbyak
+/f4se.sln
+/f4se_readme.txt
+/f4se_whatsnew.txt
+/skse64.sln
+/skse64_license.txt

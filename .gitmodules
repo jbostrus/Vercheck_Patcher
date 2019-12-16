@@ -1,4 +1,0 @@
-[submodule "reg2k/rva"]
-	path = reg2k/rva
-	url = https://github.com/reg2k/rva.git
-	branch = master

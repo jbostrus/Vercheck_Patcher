@@ -1,8 +1,9 @@
 #ifdef _DXGI_SHIM
-#include "config.h"
-#include "patcher.h"
 #include <shlobj.h>
 #include <windows.h>
+#include "config.h"
+#include "logging.h"
+#include "patcher.h"
 
 /*
 Minimal dxgi.dll shim.
@@ -29,9 +30,6 @@ extern "C" {
         static bool initDone = false;
         if (!initDone) {
             initDone = true;
-            std::string logPath = "\\My Games\\Fallout4\\Logs\\";
-            logPath += PLUGIN_LOGFILE_NAME;
-            gLog.OpenRelative(CSIDL_MYDOCUMENTS, logPath.c_str());
             _MESSAGE("%s loading...", PLUGIN_NAME_LONG);
             if (!TryToPatchMemory())
             {
@@ -73,6 +71,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 {
     switch (ul_reason_for_call) {
         case DLL_PROCESS_ATTACH:
+            OpenLogFile();
+
             char path[MAX_PATH];
             GetSystemDirectoryA(path, MAX_PATH);
             strcat_s(path, "\\dxgi.dll");
