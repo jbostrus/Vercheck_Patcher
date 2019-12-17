@@ -1,4 +1,4 @@
-# Vcheck_Patcher
+# Vercheck_Patcher
 
 This source will build a DXGI shim or F4SE/SKSE64 plugin that when used will patch the plugin header version check. The game EXE will check the version header and if it is too high it skips loading the plugin. This comes with a risk if you are using a game EXE that does not actually know how to handle the plugin odd things may happen.
 
@@ -17,15 +17,16 @@ This project has 3 build targets.
 
 ### For building a DXGI shim:
 1) Clone or extract this repository somewhere.
-2) Load the "static" solution and choose one of the build targets (<Debug/Release>_<game>_Dxgi).
+2) Load the solution.
 3) Retarget for your SDK and build tools as necessary.
-4) Build the solution.
+4) Choose one of the build targets (<Debug/Release>_<game>_Dxgi).
+5) Build the solution.
 
 ### For building an SKSE64 or F4SE plugin
 
 The setup requires special steps.
 
-1) Extract or clone this repository into a work folder.
+1) Extract or clone this repository into a work folder somewhere.
 2) Download the clean f4se/skse64 source from their respective website [f4se's website](http://f4se.silverlock.org/) [skse64's website](http://skse.silverlock.org/)
 3) Extract the f4se/skse64 sources into the work folder of the repository.
 
