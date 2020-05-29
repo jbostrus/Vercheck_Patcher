@@ -1,9 +1,9 @@
 #if defined(F4SE) || defined(SKSE64)
 #include "common/IPrefix.h"
 #endif /* F4SE || SKSE64 */
+#ifdef _DXGI_SHIM
 #include <Windows.h>
-#include <vector>
-#include <algorithm>
+#endif
 #ifdef _DEBUG
 #include <Psapi.h>
 #pragma comment( lib, "psapi.lib" )
@@ -16,47 +16,43 @@
 
 bool TryToPatchMemory()
 {
-	// Address pointer to patch new constant location to
-	uintptr_t ptrAbsAddressToPatch;
-	// Address pointer where we get the child location for our new contant
-	uintptr_t ptrAbsAddressNewValuePointerSearch;
-	// Address offset of new constant relative to patch address
-	uint32_t offNewConstRelToPatchAddress;
-	// Absolute pointer address to our desired constant
-	uintptr_t ptrAbsAddressNewConstant;
-
-#ifdef _SKYRIM64
+#if _SKYRIM64
 	// v1.5.97 @ 0x17B890 base search + 11 for target
-	RVA<uintptr_t> PatternCheckerLocation("48 81 EC ? ? ? ? F3 0F 10 05 ? ? ? ? 0F 2F 81 ? ? ? ?", 11);
+	RVA<uintptr_t> PatternAddressToPatch("48 81 EC ? ? ? ? F3 0F 10 05 ? ? ? ? 0F 2F 81 ? ? ? ?", 11);
 	// v1.5.97 @ 0x5BD6EB base search + 4 for constant offset location
-	RVA<uintptr_t> PatternNewValueSearchLocation("F3 0F 59 0D ? ? ? ? 48 8B 4F 08", 4);
+	RVA<uintptr_t> PatternNewValueOffsetLocation("F3 0F 59 0D ? ? ? ? 48 8B 4F 08", 4);
 #elif _FALLOUT4
 	// v1.10.138 @ 0x17B890 base search + 4 for target
-	RVA<uintptr_t> PatternCheckerLocation("F3 0F 10 35 ? ? ? ? 0F 2F B6 ? ? ? ?", 4);
+	RVA<uintptr_t> PatternAddressToPatch("F3 0F 10 35 ? ? ? ? 0F 2F B6 ? ? ? ?", 4);
 	// v1.10.138 @ 0x132E93 base search + 12 for constant offset location
-	RVA<uintptr_t> PatternNewValueSearchLocation("F3 0F 10 0D ? ? ? ? F3 0F 59 0D ? ? ? ? F3 0F 59 0D ? ? ? ?", 12);
+	RVA<uintptr_t> PatternNewValueOffsetLocation("F3 0F 10 0D ? ? ? ? F3 0F 59 0D ? ? ? ? F3 0F 59 0D ? ? ? ?", 12);
 #endif /* FALLOUT4 || SKYRIM64 */
 
 	// resolve all address searches
 	RVAManager::UpdateAddresses(0);
 
-	if (!PatternCheckerLocation.IsResolved())
+	if (!PatternAddressToPatch.IsResolved())
 	{
 		MessageBox(NULL, "Unable to find new original check location that needs patch.", "Fatal Error", MB_OK | MB_ICONERROR);
 		return false;
 	}
-	ptrAbsAddressToPatch = PatternCheckerLocation.GetUIntPtr();
+	// Address pointer to patch new constant location to
+	uintptr_t ptrAbsAddressToPatch = PatternAddressToPatch.GetUIntPtr();
 
-	if (!PatternNewValueSearchLocation.IsResolved())
+	if (!PatternNewValueOffsetLocation.IsResolved())
 	{
 		MessageBox(NULL, "Unable to find new value to patch in.", "Fatal Error", MB_OK | MB_ICONERROR);
 		return false;
 	}
-	ptrAbsAddressNewValuePointerSearch = PatternNewValueSearchLocation.GetUIntPtr();
+	// Address pointer where we get the child location for our new contant
+	uintptr_t ptrAbsAddressNewValuePointerSearch = PatternNewValueOffsetLocation.GetUIntPtr();
 
+	// Absolute pointer address to our desired constant
+	uintptr_t ptrAbsAddressNewConstant = Utils::GetRelative(ptrAbsAddressNewValuePointerSearch, 0, 4);
+	
 	// calculate the relative offset from patch address to new constant
-	ptrAbsAddressNewConstant = Utils::GetRelative(ptrAbsAddressNewValuePointerSearch, 0, 4);
-	offNewConstRelToPatchAddress = (uint32_t)(ptrAbsAddressNewConstant - ptrAbsAddressToPatch - sizeof(uint32_t));
+	// Address offset of new constant relative to patch address
+	int32_t offNewConstRelToPatchAddress = (int32_t)(ptrAbsAddressNewConstant - ptrAbsAddressToPatch - sizeof(int32_t));
 
 #ifdef _DEBUG
 	/**
@@ -78,12 +74,12 @@ bool TryToPatchMemory()
 		"Relative offset to new value const: 0x%08I64X\n"
 		"Float value of new constant: %d.%04d\n"
 		"Offset value to patch in: 0x%08I64X",
-		(int64_t)moduleInfo.lpBaseOfDll,
-		(int64_t)(ptrAbsAddressToPatch - (uintptr_t)moduleInfo.lpBaseOfDll),
-		(int64_t)(ptrAbsAddressNewValuePointerSearch - (uintptr_t)moduleInfo.lpBaseOfDll),
-		(int64_t)ptrAbsAddressNewConstant - (uintptr_t)moduleInfo.lpBaseOfDll,
-		(unsigned int)fVal, (unsigned int)((fVal - fVal) * 1000),
-		(int64_t)offNewConstRelToPatchAddress
+		(intptr_t)moduleInfo.lpBaseOfDll,
+		(intptr_t)(ptrAbsAddressToPatch - (intptr_t)moduleInfo.lpBaseOfDll),
+		(intptr_t)(ptrAbsAddressNewValuePointerSearch - (intptr_t)moduleInfo.lpBaseOfDll),
+		(intptr_t)ptrAbsAddressNewConstant - (intptr_t)moduleInfo.lpBaseOfDll,
+		(unsigned int)fVal, (unsigned int)((fVal - (unsigned int)fVal) * 1000),
+		(intptr_t)offNewConstRelToPatchAddress
 	);
 	_MESSAGE(buf);
 	MessageBox(NULL, buf, DEBUGTITLE, MB_OK | MB_ICONEXCLAMATION);

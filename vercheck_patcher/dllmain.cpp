@@ -5,10 +5,16 @@
 #ifdef F4SE
 #include "f4se/PluginAPI.h"
 #include "f4se_common/f4se_version.h"
+#define xSEPlugin_Query F4SEPlugin_Query
+#define xSEPlugin_Load F4SEPlugin_Load
+#define xSEInterface F4SEInterface
 #endif /* F4SE */
 #ifdef SKSE64
 #include "skse64/PluginAPI.h"
 #include "skse64_common/skse_version.h"
+#define xSEPlugin_Query SKSEPlugin_Query
+#define xSEPlugin_Load SKSEPlugin_Load
+#define xSEInterface SKSEInterface
 #endif /* SKSE64 */
 #include "config.h"
 #include "logging.h"
@@ -23,8 +29,6 @@ IDebugLog gLog;
 PluginHandle g_pluginHandle = kPluginHandle_Invalid;
 const UInt32 pluginVersion = MAKE_EXE_VERSION_EX(PLUGIN_VERSION_INTEGER, PLUGIN_VERSION_INTEGER_MINOR, PLUGIN_VERSION_INTEGER_BETA, 0);
 const std::string pluginVersionString = VERSION_TO_STRING(pluginVersion);
-
-void OpenLogFile();		// from patcher.cpp
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
@@ -41,8 +45,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 }
 
 extern "C" {
-#ifdef F4SE
-	__declspec(dllexport) bool F4SEPlugin_Query(const F4SEInterface* f4se, PluginInfo* info)
+	__declspec(dllexport) bool xSEPlugin_Query(const xSEInterface* xse, PluginInfo* info)
 	{
 		// populate info structure
 		info->infoVersion = PluginInfo::kInfoVersion;
@@ -50,9 +53,9 @@ extern "C" {
 		info->version = pluginVersion;
 
 		// store plugin handle so we can identify ourselves later
-		g_pluginHandle = f4se->GetPluginHandle(); 
-		
-		if (f4se->isEditor) {
+		g_pluginHandle = xse->GetPluginHandle();
+
+		if (xse->isEditor) {
 			_MESSAGE("loaded in editor, marking as incompatible");
 			return false;
 		}
@@ -62,7 +65,7 @@ extern "C" {
 		return true;
 	}
 
-	__declspec(dllexport) bool F4SEPlugin_Load(const F4SEInterface* f4se)
+	__declspec(dllexport) bool xSEPlugin_Load(const xSEInterface* xse)
 	{
 		_MESSAGE("%s loading...", PLUGIN_NAME_LONG);
 		if (!TryToPatchMemory())
@@ -74,38 +77,6 @@ extern "C" {
 		_MESSAGE("%s load successful.", PLUGIN_NAME_LONG);
 		return true;
 	}
-#endif /* F4SE */
-#ifdef SKSE64
-	__declspec(dllexport) bool SKSEPlugin_Query(const SKSEInterface* skse, PluginInfo* info)
-	{
-		// populate info structure
-		info->infoVersion = PluginInfo::kInfoVersion;
-		info->name = PLUGIN_NAME_SHORT;
-		info->version = pluginVersion;
-
-		if (skse->isEditor) {
-			_MESSAGE("loaded in editor, marking as incompatible");
-			return false;
-		}
-
-		// supported runtime version
-		_MESSAGE("%s query successful.", PLUGIN_NAME_LONG);
-		return true;
-	}
-
-	__declspec(dllexport) bool SKSEPlugin_Load(const SKSEInterface* skse)
-	{
-		_MESSAGE("%s loading...", PLUGIN_NAME_LONG);
-		if (!TryToPatchMemory())
-		{
-			MessageBox(NULL, "Something went terribly wrong patching memory. The game will probably crash or behave incorrectly.", PLUGIN_NAME_LONG, MB_OK | MB_ICONERROR);
-			_MESSAGE("%s load failed epicly.", PLUGIN_NAME_LONG);
-			return false;
-		}
-		_MESSAGE("%s load successful.", PLUGIN_NAME_LONG);
-		return true;
-	}
-#endif /* SKSE64 */
 };
 
 #endif /* _DXGI_SHIM */

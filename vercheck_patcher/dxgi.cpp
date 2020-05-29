@@ -35,9 +35,8 @@ extern "C" {
             {
                 MessageBox(NULL, "Something went terribly wrong patching memory. The game will probably crash or behave incorrectly.", PLUGIN_NAME_LONG, MB_OK | MB_ICONERROR);
                 _MESSAGE("%s load failed epicly.", PLUGIN_NAME_LONG);
-                return false;
             }
-            _MESSAGE("%s load successful.", PLUGIN_NAME_LONG);
+            else _MESSAGE("%s load successful.", PLUGIN_NAME_LONG);
         }
         return CreateDXGIFactory_Original(riid, ppFactory);
     }
@@ -74,10 +73,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
             OpenLogFile();
 
             char path[MAX_PATH];
-            GetSystemDirectoryA(path, MAX_PATH);
+            GetSystemDirectory(path, MAX_PATH);
             strcat_s(path, "\\dxgi.dll");
 
-            originalModule = LoadLibraryA(path);
+            originalModule = LoadLibrary(path);
             CreateDXGIFactory_Original  = reinterpret_cast<_CreateDXGIFactory> (GetProcAddress(originalModule, "CreateDXGIFactory"));
             CreateDXGIFactory1_Original = reinterpret_cast<_CreateDXGIFactory> (GetProcAddress(originalModule, "CreateDXGIFactory1"));
             CreateDXGIFactory2_Original = reinterpret_cast<_CreateDXGIFactory2>(GetProcAddress(originalModule, "CreateDXGIFactory2"));

@@ -289,6 +289,6 @@ namespace RVAUtils {
     template <typename T>
     uintptr_t GetFunctionRVA(T getPtrFunction) {
         _GetPtr GetPtr = (_GetPtr&)getPtrFunction;
-        return *GetPtr() - RelocationManager::s_baseAddr;
+        return *GetPtr() - GetModuleHandle(NULL);
     }
 }
