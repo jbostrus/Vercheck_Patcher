@@ -33,7 +33,7 @@ bool TryToPatchMemory()
 
 	if (!PatternAddressToPatch.IsResolved())
 	{
-		MessageBox(NULL, "Unable to find new original check location that needs patch.", "Fatal Error", MB_OK | MB_ICONERROR);
+		MessageBox(NULL, "Unable to find original check location that needs patch.", "Fatal Error", MB_OK | MB_ICONERROR);
 		return false;
 	}
 	// Address pointer to patch new constant location to
