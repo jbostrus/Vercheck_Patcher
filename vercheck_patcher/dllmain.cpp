@@ -77,6 +77,26 @@ extern "C" {
 		_MESSAGE("%s load successful.", PLUGIN_NAME_LONG);
 		return true;
 	}
+#ifdef SKSE64
+	_declspec(dllexport) SKSEPluginVersionData SKSEPlugin_Version =
+	{
+		SKSEPluginVersionData::kVersion,
+
+		1,
+		PLUGIN_NAME_LONG,
+
+		"Jonathan Ostrus",
+		"",
+
+		SKSEPluginVersionData::kVersionIndependentEx_NoStructUse,
+		SKSEPluginVersionData::kVersionIndependent_Signatures,
+		{ 0 },
+
+		0,	// works with any version of the script extender. you probably do not need to put anything here
+	};
+#endif
+
+
 };
 
 #endif /* _DXGI_SHIM */
